@@ -4,14 +4,14 @@ from math import sqrt
 def get_parameters(uniswap_events, event, s, t):
     if(event == "TokenPurchase"):
         I_t = s['ETH_balance']
-        O_t = s['RAI_balance']
+        O_t = s['DAI_balance']
         I_t1 = uniswap_events['eth_balance'][t]
         O_t1 = uniswap_events['token_balance'][t]
         delta_I = uniswap_events['eth_delta'][t]
         delta_O = abs(uniswap_events['token_delta'][t])
         action_key = 'eth_sold'
     else:
-        I_t = s['RAI_balance']
+        I_t = s['DAI_balance']
         O_t = s['ETH_balance']
         I_t1 = uniswap_events['token_balance'][t]
         O_t1 = uniswap_events['eth_balance'][t]
