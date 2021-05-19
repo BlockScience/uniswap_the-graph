@@ -131,7 +131,7 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
     action = _input['action_id']
     if action == 'mint':
         return mint_UNI(_params, substep, sH, s, _input)
-    elif action == 'Transfer':
+    elif action == 'burn':
         return removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 
