@@ -11,12 +11,12 @@ def p_actionDecoder(_params, substep, sH, s):
 
     Mapping to Uniswap-V2
     1. No transfer events
-    2. Mint = Positive addLiquidity
-    3. Burn = Negative addLiquidity
-    4. Swap = TokenPurchase or EthPurchase
+    2. Mint = Positive mint
+    3. Burn = Negative mint
+    4. Swap = tokenPurchase or ethPurchase
 
-    event = {'TokenPurchase', 'EthPurchase',
-             'AddLiquidity', 'Transfer'}
+    event = {'tokenPurchase', 'ethPurchase',
+             'mint', 'Transfer'}
     Columns:
         events (event)
         eth_balance (numeric)
@@ -48,10 +48,10 @@ def p_actionDecoder(_params, substep, sH, s):
     }
 
     #Event variables
-    event = uniswap_events['event'][t]
+    event = uniswap_events.iloc[t]['event']
     action['action_id'] = event
 
-    if event in ['TokenPurchase', 'EthPurchase']:
+    if event in ['tokenPurchase', 'ethPurchase']:
         I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key = get_parameters(uniswap_events, event, s, t)
         if _params['retail_precision'] == -1:
             action[action_key] = delta_I
@@ -80,7 +80,7 @@ def p_actionDecoder(_params, substep, sH, s):
                 if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params)):
                     delta_I = 0
                 action[action_key] = delta_I
-    elif event == 'AddLiquidity':
+    elif (event == 'mint') | (event == 'burn'):
         delta_I = uniswap_events['eth_delta'][t]
         action['eth_deposit'] = delta_I
     elif event == 'Transfer':
@@ -103,34 +103,34 @@ def profitable(P, delta_I, delta_O, action_key, _params):
 
 # SUFs
 
-def s_mechanismHub_DAI(_params, substep, sH, s, _input):
+def s_mechanismHub_RAI(_params, substep, sH, s, _input):
     action = _input['action_id']
-    if action == 'TokenPurchase':
-        return ethToToken_DAI(_params, substep, sH, s, _input)
-    elif action == 'EthPurchase':
-        return tokenToEth_DAI(_params, substep, sH, s, _input)
-    elif action == 'AddLiquidity':
-        return addLiquidity_DAI(_params, substep, sH, s, _input)
+    if action == 'tokenPurchase':
+        return ethToToken_RAI(_params, substep, sH, s, _input)
+    elif action == 'ethPurchase':
+        return tokenToEth_RAI(_params, substep, sH, s, _input)
+    elif action == 'mint':
+        return mint_RAI(_params, substep, sH, s, _input)
     elif action == 'Transfer':
-        return removeLiquidity_DAI(_params, substep, sH, s, _input)
-    return('DAI_balance', s['DAI_balance'])
+        return removeLiquidity_RAI(_params, substep, sH, s, _input)
+    return('RAI_balance', s['RAI_balance'])
     
 def s_mechanismHub_ETH(_params, substep, sH, s, _input):
     action = _input['action_id']
-    if action == 'TokenPurchase':
+    if action == 'tokenPurchase':
         return ethToToken_ETH(_params, substep, sH, s, _input)
-    elif action == 'EthPurchase':
+    elif action == 'ethPurchase':
         return tokenToEth_ETH(_params, substep, sH, s, _input)
-    elif action == 'AddLiquidity':
-        return addLiquidity_ETH(_params, substep, sH, s, _input)
+    elif action == 'mint':
+        return mint_ETH(_params, substep, sH, s, _input)
     elif action == 'Transfer':
         return removeLiquidity_ETH(_params, substep, sH, s, _input)
     return('ETH_balance', s['ETH_balance'])
 
 def s_mechanismHub_UNI(_params, substep, sH, s, _input):
     action = _input['action_id']
-    if action == 'AddLiquidity':
-        return addLiquidity_UNI(_params, substep, sH, s, _input)
+    if action == 'mint':
+        return mint_UNI(_params, substep, sH, s, _input)
     elif action == 'Transfer':
         return removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])

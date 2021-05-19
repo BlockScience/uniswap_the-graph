@@ -2,18 +2,18 @@ from .policy_aux import get_output_amount
 
 # Universal functions
 
-def addLiquidity(_params, substep, sH, s, _input):
+def mint(_params, substep, sH, s, _input):
     eth_reserve = int(s['ETH_balance'])
     token_reserve = int(s['RAI_balance'])
-    if _input['addLiquidity'] == (0,0):
+    if _input['mint'] == (0,0):
         token_amount = 0
     else:
-        token_amount = int(_input['addLiquidity'])
+        token_amount = int(_input['mint'])
     return('eth_balance', 'RAI_balance', token_reserve + token_amount)
 
 # RAI functions
 
-def addLiquidity_RAI(_params, substep, sH, s, _input):
+def mint_RAI(_params, substep, sH, s, _input):
     eth_reserve = int(s['ETH_balance'])
     token_reserve = int(s['RAI_balance'])
     if _input['eth_deposit'] == 0:
@@ -49,7 +49,7 @@ def tokenToEth_RAI(_params, substep, sH, s, _input):
 
 # ETH functions
 
-def addLiquidity_ETH(_params, substep, sH, s, _input):
+def mint_ETH(_params, substep, sH, s, _input):
     eth_reserve = int(s['ETH_balance'])
     return ('ETH_balance', eth_reserve + _input['eth_deposit'])
 
@@ -80,7 +80,7 @@ def tokenToEth_ETH(_params, substep, sH, s, _input):
 
 # UNI functions
 
-def addLiquidity_UNI(_params, substep, sH, s, _input):
+def mint_UNI(_params, substep, sH, s, _input):
     total_liquidity = int(s['UNI_supply'])
     eth_reserve = int(s['ETH_balance'])
     liquidity_minted = int(_input['eth_deposit'] * total_liquidity // eth_reserve)

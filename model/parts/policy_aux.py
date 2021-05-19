@@ -2,7 +2,7 @@ from math import sqrt
 
 
 def get_parameters(uniswap_events, event, s, t):
-    if(event == "TokenPurchase"):
+    if(event == "tokenPurchase"):
         I_t = s['ETH_balance']
         O_t = s['RAI_balance']
         I_t1 = uniswap_events['eth_balance'][t]
@@ -22,10 +22,10 @@ def get_parameters(uniswap_events, event, s, t):
     return I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key
 
 def reverse_event(event):
-    if(event == "TokenPurchase"):
-        new_event = 'EthPurchase'
+    if(event == "tokenPurchase"):
+        new_event = 'ethPurchase'
     else:
-        new_event = 'TokenPurchase'
+        new_event = 'tokenPurchase'
     return new_event
 
 def get_output_amount(delta_I, I_t, O_t, _params):
@@ -63,10 +63,10 @@ def get_delta_I(P, I_t, O_t, _params):
 def unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params):
     fix_cost = _params['fix_cost']
     if(fix_cost != -1):
-      if(action_key == 'eth_sold'): # TokenPurchase
+      if(action_key == 'eth_sold'): # tokenPurchase
           after_P = 1 / get_output_amount(1, I_t, O_t, _params)
           profit = int(abs(delta_O*after_P) - (delta_I))
-      else: # EthPurchase
+      else: # ethPurchase
           after_P = get_input_amount(1, I_t, O_t, _params) / 1
           profit = int(abs(delta_O) - int(delta_I/after_P))
       return (profit < fix_cost)
