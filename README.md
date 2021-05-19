@@ -1,4 +1,11 @@
-# Uniswap Model
+# Uniswap + The Graph Model
+
+## List of TODOS
+
+1. Compute the UNI supply on the cadCAD model
+- This involves computing the initial UNI supply and also implementing logic
+for calculating changes given mint / burn events
+2. Re-do the original Uniswap demo analysis in regards to Liq Providers (blocked by above)
 
 ## Event data structure
 
