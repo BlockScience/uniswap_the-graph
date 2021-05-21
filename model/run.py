@@ -10,6 +10,7 @@ PSUBs = [
         'variables': {
             'RAI_balance': s_mechanismHub_RAI,
             'ETH_balance': s_mechanismHub_ETH,
+            'UNI_supply': s_mechanismHub_UNI,
             'price_ratio': s_price_ratio
         }
     }
@@ -19,6 +20,7 @@ PSUBs = [
 genesis_states = {
     'RAI_balance': None,
     'ETH_balance': None,
+    'UNI_supply': None,
     'price_ratio': None
 }
 
@@ -38,10 +40,11 @@ def run_model() -> pd.DataFrame:
     first_row = events.iloc[0]
     
     genesis_states.update(RAI_balance=first_row.token_balance,
-                          ETH_balance=first_row.eth_balance)
+                          ETH_balance=first_row.eth_balance,
+                          UNI_supply=first_row.UNI_supply)
     
-    # N_t = len(events) - 2
-    N_t = 100
+    N_t = len(events) - 2
+    #N_t = 100
     
     
     df = easy_run(genesis_states,

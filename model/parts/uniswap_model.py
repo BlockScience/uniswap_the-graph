@@ -84,7 +84,7 @@ def p_actionDecoder(_params, substep, sH, s):
         delta_I = uniswap_events['eth_delta'][t]
         action['eth_deposit'] = delta_I
     elif event == 'Transfer':
-        UNI_delta = uniswap_events['uni_delta'][t]
+        UNI_delta = uniswap_events['UNI_delta'][t]
         UNI_supply = uniswap_events['UNI_supply'][t-1]
         if UNI_delta < 0:
             action['UNI_burn'] = -UNI_delta
@@ -131,7 +131,7 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
     action = _input['action_id']
     if action == 'mint':
         return mint_UNI(_params, substep, sH, s, _input)
-    elif action == 'burn':
+    elif action == 'Transfer':
         return removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 

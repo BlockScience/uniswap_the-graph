@@ -1,15 +1,5 @@
 from .policy_aux import get_output_amount
 
-# Universal functions
-
-def mint(_params, substep, sH, s, _input):
-    eth_reserve = int(s['ETH_balance'])
-    token_reserve = int(s['RAI_balance'])
-    if _input['mint'] == (0,0):
-        token_amount = 0
-    else:
-        token_amount = int(_input['mint'])
-    return('eth_balance', 'RAI_balance', token_reserve + token_amount)
 
 # RAI functions
 
