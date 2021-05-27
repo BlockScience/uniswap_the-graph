@@ -8,7 +8,7 @@ def get_parameters(uniswap_events, event, s, t):
         I_t1 = uniswap_events['eth_balance'][t]
         O_t1 = uniswap_events['token_balance'][t]
         delta_I = uniswap_events['eth_delta'][t]
-        delta_O = abs(uniswap_events['token_delta'][t])
+        delta_O = uniswap_events['token_delta'][t]
         action_key = 'eth_sold'
     else:
         I_t = s['RAI_balance']
@@ -16,7 +16,7 @@ def get_parameters(uniswap_events, event, s, t):
         I_t1 = uniswap_events['token_balance'][t]
         O_t1 = uniswap_events['eth_balance'][t]
         delta_I = uniswap_events['token_delta'][t]
-        delta_O = abs(uniswap_events['eth_delta'][t])
+        delta_O = uniswap_events['eth_delta'][t]
         action_key = 'tokens_sold'
     
     return I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key

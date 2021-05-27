@@ -34,12 +34,13 @@ def p_actionDecoder(_params, substep, sH, s):
         prev_timestep -= 1
         
     #skip the first two events, as they are already accounted for in the initial conditions of the system
-    t = prev_timestep + 2 
+    t = prev_timestep + 1 
     
     action = {
         'eth_sold': 0,
         'tokens_sold': 0,
         'eth_deposit': 0,
+        'token_deposit': 0,
         'UNI_burn': 0, 
         'UNI_pct': 0,
         'fee': 0,
@@ -80,15 +81,25 @@ def p_actionDecoder(_params, substep, sH, s):
                 if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params)):
                     delta_I = 0
                 action[action_key] = delta_I
-    elif (event == 'mint') | (event == 'burn'):
+    elif event == 'mint':
         delta_I = uniswap_events['eth_delta'][t]
+        delta_O = uniswap_events['token_delta'][t]
+        UNI_delta = uniswap_events['UNI_delta'][t]
+        UNI_supply = uniswap_events['UNI_supply'][t-1]
         action['eth_deposit'] = delta_I
-    elif event == 'Transfer':
+        action['token_deposit'] = delta_O
+        action['UNI_mint'] = UNI_delta
+        action['UNI_pct'] = UNI_delta / UNI_supply
+    elif event == 'burn':
+        delta_I = uniswap_events['eth_delta'][t]
+        delta_O = uniswap_events['token_delta'][t]
         UNI_delta = uniswap_events['UNI_delta'][t]
         UNI_supply = uniswap_events['UNI_supply'][t-1]
         if UNI_delta < 0:
-            action['UNI_burn'] = -UNI_delta
-            action['UNI_pct'] = -UNI_delta / UNI_supply
+            action['eth_burn'] = delta_I
+            action['token_burn'] = delta_O
+            action['UNI_burn'] = UNI_delta
+            action['UNI_pct'] = UNI_delta / UNI_supply
     del uniswap_events
     return action
 
@@ -111,7 +122,7 @@ def s_mechanismHub_RAI(_params, substep, sH, s, _input):
         return tokenToEth_RAI(_params, substep, sH, s, _input)
     elif action == 'mint':
         return mint_RAI(_params, substep, sH, s, _input)
-    elif action == 'Transfer':
+    elif action == 'burn':
         return removeLiquidity_RAI(_params, substep, sH, s, _input)
     return('RAI_balance', s['RAI_balance'])
     
@@ -123,7 +134,7 @@ def s_mechanismHub_ETH(_params, substep, sH, s, _input):
         return tokenToEth_ETH(_params, substep, sH, s, _input)
     elif action == 'mint':
         return mint_ETH(_params, substep, sH, s, _input)
-    elif action == 'Transfer':
+    elif action == 'burn':
         return removeLiquidity_ETH(_params, substep, sH, s, _input)
     return('ETH_balance', s['ETH_balance'])
 
@@ -131,7 +142,7 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
     action = _input['action_id']
     if action == 'mint':
         return mint_UNI(_params, substep, sH, s, _input)
-    elif action == 'Transfer':
+    elif action == 'burn':
         return removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 

@@ -2,10 +2,15 @@
 
 ## List of TODOS
 
+**Finished**
 1. Compute the UNI supply on the cadCAD model
 - This involves computing the initial UNI supply and also implementing logic
-for calculating changes given mint / burn events
+for calculating changes given mint / burn events 
 2. Re-do the original Uniswap demo analysis in regards to Liq Providers (blocked by above)
+
+**New Issues**
+1. Get complete dataset for RAI/ETH pair so model actually makes sense
+2. Figure out more efficient method to obtain data from The Graph
 
 ## Event data structure
 
